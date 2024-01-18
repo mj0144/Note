@@ -17,7 +17,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "about" */ '../views/PageAbout.vue')
     },
     {
-        path: '/board/list',
+        path: '/api/board',
         name: 'BoardList',
         component: BoardList
     }

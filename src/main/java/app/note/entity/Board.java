@@ -7,9 +7,11 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Entity
+@Setter
 @Table(name = "board")
 @NoArgsConstructor
 public class Board {
@@ -36,7 +38,11 @@ public class Board {
     public Board(String title, String content, String id_frt) {
         this.title = title;
         this.content = content;
+    }
 
+    public void updateContentTitle(String content, String title) {
+        this.content = content;
+        this.title = title;
     }
 
 }

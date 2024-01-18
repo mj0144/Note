@@ -18,9 +18,22 @@ public class BoardRepository {
                 .getResultList();
     }
 
+    // 저장
     public long save(Board board) {
         em.persist(board);
         return board.getId();
     }
+
+    // 1건 조회
+    public Board getById(long id) {
+        return em.createQuery("select b from Board b where b.id = :id", Board.class)
+                .setParameter("id", id)
+                .getSingleResult();
+    }
+
+    //업데이트 -> 변경감지 사용.
+
+
+    //삭제
 
 }

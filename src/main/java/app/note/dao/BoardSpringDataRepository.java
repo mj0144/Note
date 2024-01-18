@@ -9,5 +9,15 @@ import java.util.List;
 @Repository
 public interface BoardSpringDataRepository extends JpaRepository<Board, Long> {
 
-    List<Board> findAll();
+    //public List<Board> findAll(); // 전체리스트
+
+    // 저장
+    //public Board save(Board board);
+
+    // 1건 조회
+    //Board getById(Long aLong);
+
+    // 수정
+
+    // 삭제
 }
