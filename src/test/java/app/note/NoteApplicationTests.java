@@ -2,8 +2,10 @@ package app.note;
 
 import app.note.dao.BoardRepository;
 import app.note.dto.BoardDto;
+import app.note.dto.BoardSearchCondition;
 import app.note.entity.Board;
 import app.note.service.BoardService;
+import jakarta.persistence.PrePersist;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -24,6 +25,23 @@ class NoteApplicationTests {
 
     @Autowired
     BoardService boardService;
+
+    @PrePersist
+    @Transactional
+    public void init() {
+        for(int i=0; i<10; i++) {
+            Board board = Board.builder()
+                    .title("테스트 제목"+i)
+                    .content("테스트내용"+i)
+                    .build();
+
+            boardRepository.save(board);
+        }
+
+
+    }
+
+
 
     @Test
     @Transactional
@@ -37,7 +55,11 @@ class NoteApplicationTests {
 
         boardRepository.save(board);
 
-        List<Board> all = boardRepository.findAll();
+        BoardSearchCondition boardSearchCondition = new BoardSearchCondition();
+        int offset = 1;
+        int limit = 2;
+
+        List<Board> all = boardRepository.findAll(boardSearchCondition, offset, limit);
 
         // TODO : all 순회.
 
@@ -59,6 +81,14 @@ class NoteApplicationTests {
         dto.setContent("내용수정1");
         dto.setId(saveID);
         boardService.update(dto);
+    }
+
+
+    @Test
+    @Transactional
+    @Rollback(value = false)
+    public void board_리스트_페이징_테스트() {
+
     }
 
 }

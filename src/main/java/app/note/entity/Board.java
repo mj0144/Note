@@ -1,7 +1,7 @@
 package app.note.entity;
 
-import app.note.embeded.Period;
-import app.note.embeded.Writer;
+import app.note.embeded.BaseTime;
+import app.note.embeded.BaseUser;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
@@ -30,9 +30,9 @@ public class Board {
      * 값타입
      */
     @Embedded
-    private Period period; // TODO : 자동으로 세팅되도록 수정
+    private BaseTime baseTime; // TODO : 자동으로 세팅되도록 수정
     @Embedded
-    private Writer writer; // TODO : 기본값으로 세팅되도록 수정
+    private BaseUser baseUser; // TODO : 기본값으로 세팅되도록 수정
 
     @Builder
     public Board(String title, String content, String id_frt) {

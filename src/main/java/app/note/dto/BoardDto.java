@@ -1,7 +1,7 @@
 package app.note.dto;
 
-import app.note.embeded.Period;
-import app.note.embeded.Writer;
+import app.note.embeded.BaseTime;
+import app.note.embeded.BaseUser;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,8 +13,8 @@ public class BoardDto {
 
     private String title;
     private String content;
-    private Period period;
-    private Writer writer;
+    private BaseTime baseTime;
+    private BaseUser baseUser;
 
     @Builder
     public BoardDto(String title, String content, String id_frt) {

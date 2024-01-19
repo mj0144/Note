@@ -1,10 +1,13 @@
 package app.note.service;
 
+import app.note.controller.BoardRequestDto;
 import app.note.dao.BoardRepository;
 import app.note.dao.BoardSpringDataRepository;
 import app.note.dto.BoardDto;
+import app.note.dto.BoardSearchCondition;
 import app.note.entity.Board;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,11 +19,25 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final BoardSpringDataRepository boardSpringDataRepository;
 
-    // 리스트 조회
-    public List<Board> findAll() {
-        return boardRepository.findAll();
+    // 페이징 조회. springData
+    public Page<Board> findPaging() {
+        return boardSpringDataRepository.findPaging();
     }
 
+
+    // 리스트 - 페이징 동적 조회
+    public List<Board> findAll(BoardSearchCondition condition, int offset, int limit) {
+        return boardRepository.findAll(condition, offset, limit);
+    }
+
+
+
+
+
+
+
+
+    // 전체 조회 - springData
     public List<Board> findAll_springData() {
         return boardSpringDataRepository.findAll();
     }
@@ -34,7 +51,7 @@ public class BoardService {
 //                .title(dto.getTitle())
 //                .build();
 
-        board.updateContentTitle(dto.getContent(), dto.getTitle());
+        board.updateContentTitle(dto.getContent(), dto.getTitle()); // 변경감지 사용.
     }
 
     //단건조회
@@ -42,5 +59,14 @@ public class BoardService {
         return boardRepository.getById(id);
     }
 
-    //
+    // 저장 - springData
+    public Board save(BoardRequestDto boardRequestDto) {
+        Board board = Board.builder()
+                .title(boardRequestDto.getTitle())
+                .content(boardRequestDto.getContent())
+                .build();
+        return boardSpringDataRepository.save(board);
+    }
+
+
 }
