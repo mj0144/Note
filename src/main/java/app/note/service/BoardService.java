@@ -21,7 +21,8 @@ public class BoardService {
 
     // 페이징 조회. springData
     public Page<Board> findPaging() {
-        return boardSpringDataRepository.findPaging();
+//        return boardSpringDataRepository.findPaging();
+        return null;
     }
 
 

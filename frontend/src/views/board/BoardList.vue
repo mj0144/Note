@@ -63,7 +63,7 @@ export default {
         total_list_cnt: 0,
         total_page_cnt: 0,
       }, //페이징 데이터
-      page: this.$route.query.page ? this.$route.query.page : 1,
+      page: this.$route.query.page ? this.$route.query.page : 0,
       size: this.$route.query.size ? this.$route.query.size : 10,
       keyword: this.$route.query.keyword,
       paginavigation: function () { //페이징 처리 for문 커스텀

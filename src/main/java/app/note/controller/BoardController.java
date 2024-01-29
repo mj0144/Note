@@ -7,20 +7,20 @@ import app.note.service.BoardService;
 import jakarta.websocket.server.PathParam;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController("/api")
+@RestController
+@RequestMapping("/api")
 @RequiredArgsConstructor
+@Slf4j
 public class BoardController {
 
     private final BoardService boardService;
@@ -42,6 +42,7 @@ public class BoardController {
 //    public Page<BoardResponseDto> boardList(@PageableDefault(size = 5) Pageable pageable) {
     public ResponseEntity<List<BoardResponseDto>> boardList(@PageableDefault(size = 5) Pageable pageable,
                                                             BoardSearchCondition boardSearchCondition) {
+        log.info("boardList");
         List<Board> list = boardService.findAll(boardSearchCondition, (int) pageable.getOffset(), pageable.getPageSize());
         List<BoardResponseDto> boardResponseDtos = list.stream()
                 .map(o -> new BoardResponseDto(o))

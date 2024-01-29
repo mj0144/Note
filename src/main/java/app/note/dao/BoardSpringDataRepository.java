@@ -13,8 +13,8 @@ import org.springframework.stereotype.Repository;
 public interface BoardSpringDataRepository extends JpaRepository<Board, Long> {
 
     //public List<Board> findAll(); // 전체리스트
-    @Query("select b from Board b")
-    public Page<Board> findPaging();
+//    @Query("select b from Board b")
+//    public Page<Board> findPaging();
 
     // 저장
     //public Board save(Board board);
