@@ -2,6 +2,7 @@ package app.note.dao;
 
 import app.note.dto.BoardSearchCondition;
 import app.note.entity.Board;
+import com.querydsl.core.types.ExpressionException;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -78,8 +79,17 @@ public class BoardRepository {
 
 
     //업데이트 -> 변경감지 사용.
-
+//    public void updateBoard(long id) throws Exception {
+//
+//    }
 
     //삭제
+    public void deleteBoard(long id) throws Exception {
+
+// queryDSL
+//        queryFactory.delete(board)
+//                .where(board.id.eq(id))
+//                .execute();
+    }
 
 }

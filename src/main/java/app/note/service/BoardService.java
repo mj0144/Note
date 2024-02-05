@@ -1,6 +1,7 @@
 package app.note.service;
 
 import app.note.controller.BoardRequestDto;
+import app.note.controller.BoardUpdateRequestDto;
 import app.note.dao.BoardRepository;
 import app.note.dao.BoardSpringDataRepository;
 import app.note.dto.BoardDto;
@@ -25,27 +26,33 @@ public class BoardService {
         return null;
     }
 
-
     // 리스트 - 페이징 동적 조회
-    public List<Board> findAll(BoardSearchCondition condition, int offset, int limit) {
+    public List<Board> getBoards(BoardSearchCondition condition, int offset, int limit) {
         return boardRepository.findAll(condition, offset, limit);
     }
-
-
-
-
-
-
-
 
     // 전체 조회 - springData
     public List<Board> findAll_springData() {
         return boardSpringDataRepository.findAll();
     }
 
-    // 수정
+    //단건조회
+    public Board getBoard(long id) {
+        return boardRepository.getById(id);
+    }
+
+    // 저장 - springData
+    public Board createBoard(BoardRequestDto boardRequestDto) {
+        Board board = Board.builder()
+                .title(boardRequestDto.getTitle())
+                .content(boardRequestDto.getContent())
+                .build();
+        return boardSpringDataRepository.save(board);
+    }
+
+    // 게시물 수정
     @Transactional
-    public void update(BoardDto dto) {
+    public void updateBoard(BoardUpdateRequestDto dto) {
         Board board = boardRepository.getById(dto.getId());
 //        board = Board.builder() // 새로운 객체를 할당하는 방식이라 안됨.
 //                .content(dto.getContent())
@@ -55,19 +62,13 @@ public class BoardService {
         board.updateContentTitle(dto.getContent(), dto.getTitle()); // 변경감지 사용.
     }
 
-    //단건조회
-    public Board findById(long id) {
-        return boardRepository.getById(id);
+    public void deletBoard(long id) {
+        boardSpringDataRepository.deleteById(id);
     }
 
-    // 저장 - springData
-    public Board save(BoardRequestDto boardRequestDto) {
-        Board board = Board.builder()
-                .title(boardRequestDto.getTitle())
-                .content(boardRequestDto.getContent())
-                .build();
-        return boardSpringDataRepository.save(board);
-    }
+
+
+
 
 
 }
