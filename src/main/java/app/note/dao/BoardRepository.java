@@ -6,6 +6,7 @@ import com.querydsl.core.types.ExpressionException;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -59,21 +60,28 @@ public class BoardRepository {
     }
 
     // TODO : 동적쿼리 필요.
-    public List<Board> findAll(BoardSearchCondition condition, int offset, int limit) {
+//    public List<Board> findAll(BoardSearchCondition condition, int offset, int limit) {
+    public List<Board> findAll(BoardSearchCondition condition, Pageable pageable) {
         return queryFactory.selectFrom(board)
-                .where(titleLike(condition.getTitle()),
-                        contentLike(condition.getContent()))
-                .offset(offset)
-                .limit(limit)
+                .where(titleLike(condition),
+                        contentLike(condition))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
     }
 
-    private BooleanExpression titleLike(String title){
-        return StringUtils.isEmpty(title) ? null : board.title.like(title);
+    private BooleanExpression titleLike(BoardSearchCondition condition){
+        if(condition != null) {
+            return StringUtils.isEmpty(condition.getTitle()) ? null : board.title.like(condition.getTitle());
+        }
+        return null;
     }
 
-    private BooleanExpression contentLike(String content){
-        return StringUtils.isEmpty(content) ? null : board.content.like(content);
+    private BooleanExpression contentLike(BoardSearchCondition condition){
+        if(condition != null) {
+            return StringUtils.isEmpty(condition.getContent()) ? null : board.content.like(condition.getContent());
+        }
+        return null;
     }
 
 

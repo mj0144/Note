@@ -11,10 +11,9 @@ import lombok.Setter;
 
 @Getter
 @Entity
-@Setter
 @Table(name = "board")
 @NoArgsConstructor
-public class Board {
+public class Board extends BaseTime{
 
     @Id @GeneratedValue
     @Column(name = "board_id")
@@ -29,10 +28,10 @@ public class Board {
     /**
      * 값타입
      */
-    @Embedded
-    private BaseTime baseTime; // TODO : 자동으로 세팅되도록 수정
-    @Embedded
-    private BaseUser baseUser; // TODO : 기본값으로 세팅되도록 수정
+//    @Embedded
+//    private BaseTime baseTime; // TODO : 자동으로 세팅되도록 수정
+//    @Embedded
+//    private BaseUser baseUser; // TODO : 기본값으로 세팅되도록 수정
 
     @Builder
     public Board(String title, String content, String id_frt) {

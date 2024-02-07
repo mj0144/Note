@@ -5,6 +5,8 @@ import app.note.dto.BoardSearchCondition;
 import app.note.entity.Board;
 import app.note.service.BoardService;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,24 +27,12 @@ public class BoardController {
 
     private final BoardService boardService;
 
-    // list 목록 출력 ( get : /api/board )
-//    @GetMapping("/board")
-//    public ResponseEntity<BoardResponseDto> boardList() {
-//        List<Board> list = boardService.findAll();
-//
-//        List<BoardResponseDto> boardResponseDtos = list.stream()
-//                .map(o -> new BoardResponseDto(o))
-//                .collect(Collectors.toList());
-//
-//        return new ResponseEntity<>(boardResponseDtos, HttpStatus.OK);
-//    }
-
     // 게시물 목록 조회
     @GetMapping("/board")
     public ResponseEntity<List<BoardResponseDto>> getBoards(@PageableDefault(size = 5) Pageable pageable,
-                                                            BoardSearchCondition boardSearchCondition) {
+                                                             BoardSearchCondition boardSearchCondition) {
         log.info("boardList");
-        List<Board> list = boardService.getBoards(boardSearchCondition, (int) pageable.getOffset(), pageable.getPageSize());
+        List<Board> list = boardService.getBoards(boardSearchCondition, pageable);
         List<BoardResponseDto> boardResponseDtos = list.stream()
                 .map(o -> new BoardResponseDto(o))
                 .collect(Collectors.toList());
@@ -61,18 +51,18 @@ public class BoardController {
     }
 
     //  게시물 저장
-    // TODO : requestdto를 service단에 보내는건 안좋지 않을가? 사실상 여기서 엔티티에 매핑해서 넘기는게 맞지 않을까?
     @PostMapping("/board")
-    public ResponseEntity creatBoard(BoardRequestDto boardRequestDto) {
+    public ResponseEntity creatBoard(@Valid @RequestBody BoardRequestDto boardRequestDto) {
         Board save = boardService.createBoard(boardRequestDto);
-        return new ResponseEntity("저장 완료, "+save.getId(), HttpStatus.OK);
+        return new ResponseEntity("저장 완료, "+save.getId(), HttpStatus.OK); // TODO : 리턴시, 상태코드랑 이런것도 넘겨야지.
     }
 
     // 게시물 수정
     @PutMapping("/board/{id}")
-    public ResponseEntity<String> updateBoard(@PathVariable("id") long id, BoardUpdateRequestDto boardUpdateRequestDto) {
-        boardService.updateBoard(boardUpdateRequestDto);
+    public ResponseEntity<String> updateBoard(@PathVariable("id") long id,
+                                              @RequestBody BoardUpdateRequestDto boardUpdateRequestDto) {
         try {
+            boardService.updateBoard(id, boardUpdateRequestDto);
             return ResponseEntity.ok("정상처리 되었습니다");
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
@@ -83,6 +73,12 @@ public class BoardController {
     //  삭제 ( delete : /api/board/{id} )
     @DeleteMapping("/board/{id}")
     public ResponseEntity<String> deleteBoard(@PathVariable("id") long id) {
+        try {
+            boardService.deletBoard(id);
+            return ResponseEntity.ok("정상처리 되었습니다");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.internalServerError().build();
+        }
 
     }
 

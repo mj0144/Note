@@ -23,8 +23,8 @@ public class BoardResponseDto {
         this.id = board.getId();
         this.title = board.getTitle();
         this.content = board.getContent();
-        this.baseTime = board.getBaseTime();
-        this.baseUser = board.getBaseUser();
+//        this.baseTime = board.getBaseTime();
+//        this.baseUser = board.getBaseUser();
     }
 
 }

@@ -11,6 +11,9 @@ spring:
       hibernate:
         # show_sql: true
         format_sql: true
+  profiles:
+    active: test # 기본은 일단 테스트로.
+
 
 logging.level:
   org.hibernate.SQL: debug
