@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${MYSQL_DATABASE_URL}
+    username: ${MYSQL_DATABASE_USERNAME}
+    password: ${MYSQL_DATABASE_PASSWORD}
+  sql:
+    init:
+      schema-locations: classpath:schema.sql
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        # show_sql: true
+        format_sql: true
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQLDialect
+
+
+logging.level:
+  org.hibernate.SQL: debug
+# org.hibernate.type: trace #스프링 부트 2.x, hibernate5
+  org.hibernate.orm.jdbc.bind: trace #스프링 부트 3.x, hibernate6
