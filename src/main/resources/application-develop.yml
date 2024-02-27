@@ -1,4 +1,7 @@
 spring:
+  config:
+    activate:
+      on-profile: develop
   datasource:
     url: jdbc:h2:tcp://localhost/~/noteApp
     username: sa
