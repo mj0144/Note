@@ -1,5 +1,5 @@
 CREATE TABLE board(
-  board_id INT(11) NOT NULL AUTO_INCREMENT,
+  board_id INT NOT NULL AUTO_INCREMENT,
   content VARCHAR(1000) NOT NULL,
   title VARCHAR(255) NULL,
   created_date  DATETIME,
