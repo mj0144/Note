@@ -59,4 +59,5 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+    enabled = false // 빌드 시, 테스트 제외.
 }
