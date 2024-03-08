@@ -28,6 +28,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+//    implementation 'io.jsonwebtoken:jjwt-api'
+
 
     // 파라미터 쿼리 바인딩 라이브러리. 외부 라이브러리이므로 운영은 사용에 주의
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
@@ -37,6 +41,9 @@ dependencies {
     annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+
+
 
     //mysql
     implementation 'mysql:mysql-connector-java:8.0.32'

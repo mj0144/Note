@@ -10,6 +10,7 @@ import app.note.entity.Board;
 import app.note.error.ErrorCode;
 import app.note.exception.NotFoundBoardException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class BoardService {
+
     private final BoardRepository boardRepository;
     private final BoardSpringDataRepository boardSpringDataRepository;
 

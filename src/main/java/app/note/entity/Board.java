@@ -9,11 +9,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Entity
 @Table(name = "board")
 @NoArgsConstructor
-public class Board extends BaseTime{
+public class Board extends BaseUser {
 
     @Id @GeneratedValue
     @Column(name = "board_id")
@@ -25,16 +27,12 @@ public class Board extends BaseTime{
     @NotEmpty(message = "내용은 필수값")
     private String content;
 
-    /**
-     * 값타입
-     */
-//    @Embedded
-//    private BaseTime baseTime; // TODO : 자동으로 세팅되도록 수정
-//    @Embedded
-//    private BaseUser baseUser; // TODO : 기본값으로 세팅되도록 수정
+    @JoinColumn(name = "user_id")
+    @ManyToOne
+    private User user;
 
     @Builder
-    public Board(String title, String content, String id_frt) {
+    public Board(String title, String content) {
         this.title = title;
         this.content = content;
     }

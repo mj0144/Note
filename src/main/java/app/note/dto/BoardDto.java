@@ -17,7 +17,7 @@ public class BoardDto {
     private BaseUser baseUser;
 
     @Builder
-    public BoardDto(String title, String content, String id_frt) {
+    public BoardDto(String title, String content) {
         this.title = title;
         this.content = content;
 
