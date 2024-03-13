@@ -19,9 +19,10 @@ import java.util.List;
 @Table(name = "USERS")
 //@Table(uniqueConstraints = {@UniqueConstraint(columnNames = "userId")})
 public class User {
-    @Id @GeneratedValue
-    private long id;
+//    @Id @GeneratedValue
+//    private long id;
 
+    @Id
     @NotEmpty(message = "아이디는 필수값")
     @Column(unique = true, name = "user_id") // 아이디는 유일값.
     private String userId;
@@ -36,7 +37,8 @@ public class User {
 
     private Gender gender;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL) // authority 도 함께 저장.
+    @Builder.Default // 빌더 시 기본값.
     private List<Authority> roles = new ArrayList<>();
 
     public void setRoles(List<Authority> role) {
@@ -45,7 +47,7 @@ public class User {
     }
 
     public User(User user) {
-        this.id = user.getId();
+//        this.id = user.getId();
         this.userId = user.getUserId();
         this.passwd = user.getPasswd();
         this.name = user.getName();

@@ -1,10 +1,7 @@
 package app.note.security;
 
 import app.note.entity.Authority;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +21,7 @@ import java.util.List;
 @Component
 public class JwtProvider {
 
-    @Value("${jwt.secret.key}")
+    @Value("${jwt.secret.key}") // application.yml에서 값 주입
     private String salt;
 
     private Key secretKey;
@@ -34,6 +31,8 @@ public class JwtProvider {
 
     private final CustomerUserDetailsService userDetailsService;
 
+    private final String jwtValue = "BEARER ";
+
     @PostConstruct
     protected void init() {
         secretKey = Keys.hmacShaKeyFor(salt.getBytes(StandardCharsets.UTF_8));
@@ -42,14 +41,17 @@ public class JwtProvider {
     // 토큰 생성
     public String createToken(String account, List<Authority> roles) {
         Claims claims = Jwts.claims().setSubject(account);
+//        Claims claims = Jwts.claims().subject(account).build();
         claims.put("roles", roles);
         Date now = new Date();
         return Jwts.builder()
+//                .setPayload(account)
                 .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + exp))
+                .setIssuedAt(now) // jwt가 생성된 타임스탬프
+                .setExpiration(new Date(now.getTime() + exp)) // 만료시간
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
+                //.toString();
     }
 
     // 권한정보 획득
@@ -69,18 +71,24 @@ public class JwtProvider {
         return request.getHeader("Authorization");
     }
 
-    // 토큰 검증
+    // 토큰 검증 - 만료시간 기반
     public boolean validateToken(String token) {
         try {
             // Bearer 검증
-            if (!token.substring(0, "BEARER ".length()).equalsIgnoreCase("BEARER ")) {
+            if (!token.substring(0, jwtValue.length()).equalsIgnoreCase(jwtValue)) { // JWT value의 시작은 BEARER로 시작.
                 return false;
-            } else {
-                token = token.split(" ")[1].trim();
             }
-            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
+
+            token = token.split(jwtValue)[1].trim(); // BEARER 이후 값.
+
+            Jws<Claims> claims = Jwts.parserBuilder() // 스레드 안전
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token);
+
             // 만료되었을 시 false
             return !claims.getBody().getExpiration().before(new Date());
+
         } catch (Exception e) {
             return false;
         }

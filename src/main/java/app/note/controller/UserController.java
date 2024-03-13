@@ -30,6 +30,11 @@ public class UserController {
 
 
     // 로그인
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) throws Exception {
+        return new ResponseEntity<>(userService.login(loginRequest) , HttpStatus.OK);
+
+    }
 
     // 개인정보 수정
 
