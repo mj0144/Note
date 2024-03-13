@@ -4,10 +4,7 @@ import app.note.embeded.BaseTime;
 import app.note.embeded.BaseUser;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -15,6 +12,8 @@ import java.util.List;
 @Entity
 @Table(name = "board")
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Board extends BaseUser {
 
     @Id @GeneratedValue
@@ -31,15 +30,16 @@ public class Board extends BaseUser {
     @ManyToOne
     private User user;
 
-    @Builder
-    public Board(String title, String content) {
-        this.title = title;
-        this.content = content;
-    }
+//    @Builder
+//    public Board(String title, String content) {
+//        this.title = title;
+//        this.content = content;
+//    }
 
     public void updateContentTitle(String content, String title) {
         this.content = content;
         this.title = title;
     }
+
 
 }

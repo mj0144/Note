@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
@@ -32,13 +33,20 @@ import java.util.List;
 @EnableWebSecurity(debug = true)
 public class SecurityConfig {
 
+    private final JwtProvider jwtProvider;
+
+    public SecurityConfig(JwtProvider jwtProvider) {
+        this.jwtProvider = jwtProvider;
+    }
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         System.out.println("secyrity call");
         // httpBasic은 7.0버전에서 제거. 람다식 지향.
         http
-                .httpBasic(Customizer.withDefaults())
+                .httpBasic(basic -> basic.disable())
                 .csrf((csrf) -> csrf.disable()) // csrf 비활서화
                 // CORS 설정
 //                .cors(c -> {
@@ -57,15 +65,18 @@ public class SecurityConfig {
 //                        }
 //                )
 //                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                // 세션방식은 사용하지 않음.
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> {
                     httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 })
                 .authorizeHttpRequests(authorize -> authorize
-                                .requestMatchers(HttpMethod.POST, "/api/**").permitAll()
+                                .requestMatchers("/api/**").permitAll()
 //                                .anyRequest().denyAll()
 //                        .requestMatchers("/users/**").hasRole("USER")
 //                        .anyRequest().authenticated()
                 )
+                // jwt 필터 인증 사용
+                .addFilterBefore(new AuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling((exceptionHandling ) ->
                         exceptionHandling
                                 .authenticationEntryPoint((request, response, authException) -> { // 인증 문제
@@ -88,15 +99,16 @@ public class SecurityConfig {
 
     }
 
+    // Encoding 방식이 붙은채로 저장되어 암호화 방식을 지정하여 저장가능.
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
 
-    @Bean
-    public AuthenticationFilter authenticationFilter() {
-        return new AuthenticationFilter();
-    }
+//    @Bean
+//    public AuthenticationFilter authenticationFilter() {
+//        return new AuthenticationFilter();
+//    }
 
 }

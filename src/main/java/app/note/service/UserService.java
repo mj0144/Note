@@ -23,6 +23,7 @@ public class UserService {
     public Boolean register(UserRequestDto userRequestDto) throws Exception {
         try {
             User user = User.builder()
+                    .userId(userRequestDto.getUserId())
                     .name(userRequestDto.getName())
                     .passwd(passwordEncoder.encode(userRequestDto.getPasswd()))
                     .gender(userRequestDto.getGender())
@@ -36,6 +37,7 @@ public class UserService {
             //        return Optional.of(userSpringDataRepository.save(user));
             userSpringDataRepository.save(user);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new Exception("잘못된 요청");
         }
 
