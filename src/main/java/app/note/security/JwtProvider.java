@@ -1,6 +1,5 @@
 package app.note.security;
 
-import app.note.entity.Authority;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -16,7 +15,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -43,13 +41,13 @@ public class JwtProvider {
     }
 
     // 토큰 생성
-    public String createToken(String id, List<Authority> Authorites) {
+    public String createToken(String id, List<String> Authorites) {
         Claims claims = Jwts.claims().setSubject(id);
-        String roles = Authorites.stream()
-                .map(Authority::getName)
-                .collect(Collectors.joining(","));
+//        String roles = Authorites.stream()
+//                .map(GrantedAuthority::getAuthority)
+//                .collect(Collectors.joining(","));
 
-        claims.put("roles", roles);
+        claims.put("roles", Authorites);
         Date now = new Date();
         return Jwts.builder()
 //                .setPayload(id)

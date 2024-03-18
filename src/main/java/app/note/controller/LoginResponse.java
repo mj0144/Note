@@ -1,6 +1,5 @@
 package app.note.controller;
 
-import app.note.entity.Authority;
 import app.note.entity.Gender;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,12 +15,11 @@ import java.util.List;
 public class LoginResponse {
 
     private String userId;
-    private String passwd;
     private String name;
     private LocalDate brith;
     private Gender gender;
 
-    private List<Authority> roles = new ArrayList<>();
+    private List<String> roles = new ArrayList<>();
 
     private String token;
 

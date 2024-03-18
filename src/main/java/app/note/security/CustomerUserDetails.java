@@ -18,11 +18,7 @@ public class CustomerUserDetails implements UserDetails {
     // 단순히 권한 문자열 표현
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return user.getRoles().stream()
-                .map(o -> new SimpleGrantedAuthority(
-                        o.getName()
-                )).collect(Collectors.toList());
-
+        return user.ofRoles();
     }
 
     @Override

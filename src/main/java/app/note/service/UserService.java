@@ -5,7 +5,6 @@ import app.note.controller.LoginRequest;
 import app.note.controller.LoginResponse;
 import app.note.controller.UserRequestDto;
 import app.note.dao.UserSpringDataRepository;
-import app.note.entity.Authority;
 import app.note.security.JwtProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -13,8 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import app.note.entity.User;
 
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -27,19 +25,16 @@ public class UserService {
 
     public Boolean register(UserRequestDto userRequestDto) throws Exception {
         try {
+
             User user = User.builder()
                     .userId(userRequestDto.getUserId())
                     .name(userRequestDto.getName())
                     .passwd(passwordEncoder.encode(userRequestDto.getPasswd()))
                     .gender(userRequestDto.getGender())
                     .brith(userRequestDto.getBrith())
+                    .roles(Arrays.asList("ROLE_USER"))
                     .build();
 
-            user.setRoles(Collections.singletonList(Authority.builder()
-                    .name("ROLE_USER")
-                    .build())
-            );
-            //        return Optional.of(userSpringDataRepository.save(user));
             userSpringDataRepository.save(user);
         } catch (Exception e) {
             e.printStackTrace();

@@ -19,25 +19,19 @@ public class UserController {
 
     private final UserService userService;
 
-
     // 회원가입
     @PostMapping("/users")
     public ResponseEntity<Boolean> saveUser(@RequestBody UserRequestDto userRequestDto) throws Exception {
         return new ResponseEntity<>(userService.register(userRequestDto), HttpStatus.OK);
-//        User user = .orElseThrow();
-
     }
-
 
     // 로그인
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) throws Exception {
         return new ResponseEntity<>(userService.login(loginRequest) , HttpStatus.OK);
-
     }
 
-    // 개인정보 수정
-
+    // TODO : 개인정보 수정
     // TODO : 탈퇴
 
 
