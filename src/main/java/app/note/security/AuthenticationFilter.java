@@ -17,7 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
-public class AuthenticationFilter extends OncePerRequestFilter {
+public class AuthenticationFilter extends OncePerRequestFilter { // 필터 중복 방지.
 
 //    @Autowired
 //    private CustomerUserDetailsService customerUserDetailsService;
@@ -44,12 +44,11 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = jwtProvider.resolveToken(request);
+        String token = jwtProvider.resolveToken(request); // authentication 헤더 값.
 
-        // authentication 헤더 있는 경우
+        // authentication 헤더 있는 경우. 토큰 내용 확인.
         if (token != null && jwtProvider.validateToken(token)) {
-            // check access token
-            token = token.split(" ")[1].trim();
+            token = token.split(" ")[1].trim(); // // BEARER 이후 값.: 실제 토큰 값.
             Authentication auth = jwtProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(auth);
         }

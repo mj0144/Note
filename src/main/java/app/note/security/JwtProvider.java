@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -33,25 +34,30 @@ public class JwtProvider {
 
     private final String jwtValue = "BEARER ";
 
+    private final String jwtHeader = "Authorization"; // jwt 토큰 request 헤더
+
+    // 키 생성. HS256알고리즘 사용
     @PostConstruct
     protected void init() {
         secretKey = Keys.hmacShaKeyFor(salt.getBytes(StandardCharsets.UTF_8));
     }
 
     // 토큰 생성
-    public String createToken(String account, List<Authority> roles) {
-        Claims claims = Jwts.claims().setSubject(account);
-//        Claims claims = Jwts.claims().subject(account).build();
+    public String createToken(String id, List<Authority> Authorites) {
+        Claims claims = Jwts.claims().setSubject(id);
+        String roles = Authorites.stream()
+                .map(Authority::getName)
+                .collect(Collectors.joining(","));
+
         claims.put("roles", roles);
         Date now = new Date();
         return Jwts.builder()
-//                .setPayload(account)
+//                .setPayload(id)
                 .setClaims(claims)
                 .setIssuedAt(now) // jwt가 생성된 타임스탬프
                 .setExpiration(new Date(now.getTime() + exp)) // 만료시간
-                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .signWith(secretKey, SignatureAlgorithm.HS256) // 서명 데이터
                 .compact();
-                //.toString();
     }
 
     // 권한정보 획득
@@ -68,7 +74,7 @@ public class JwtProvider {
 
     // Authorization Header를 통해 인증을 한다.
     public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("Authorization");
+        return request.getHeader(jwtHeader);
     }
 
     // 토큰 검증 - 만료시간 기반
@@ -81,6 +87,7 @@ public class JwtProvider {
 
             token = token.split(jwtValue)[1].trim(); // BEARER 이후 값.
 
+            // payload의 클레임값 꺼내오기.
             Jws<Claims> claims = Jwts.parserBuilder() // 스레드 안전
                     .setSigningKey(secretKey)
                     .build()
