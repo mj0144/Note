@@ -1,10 +1,9 @@
 package app.note.service;
 
-
-import app.note.controller.LoginRequest;
 import app.note.controller.LoginResponse;
 import app.note.controller.UserRequestDto;
 import app.note.dao.UserSpringDataRepository;
+import app.note.exception.DuplicateUserIdException;
 import app.note.security.JwtProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -23,33 +22,29 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 
-    public Boolean register(UserRequestDto userRequestDto) throws Exception {
-        try {
+    public User register(UserRequestDto userRequestDto) throws Exception {
+            // 기존 회원찾기.
+        userSpringDataRepository.findByUserId(userRequestDto.getUserId())
+                .ifPresent(user -> new DuplicateUserIdException("잘못된 요청"));
 
-            User user = User.builder()
-                    .userId(userRequestDto.getUserId())
-                    .name(userRequestDto.getName())
-                    .passwd(passwordEncoder.encode(userRequestDto.getPasswd()))
-                    .gender(userRequestDto.getGender())
-                    .brith(userRequestDto.getBrith())
-                    .roles(Arrays.asList("ROLE_USER"))
-                    .build();
+        User user = User.builder()
+                .userId(userRequestDto.getUserId())
+                .name(userRequestDto.getName())
+                .passwd(passwordEncoder.encode(userRequestDto.getPasswd()))
+                .gender(userRequestDto.getGender())
+                .brith(userRequestDto.getBrith())
+                .roles(Arrays.asList("ROLE_USER"))
+                .build();
 
-            userSpringDataRepository.save(user);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new Exception("잘못된 요청");
-        }
-
-        return true;
+        return userSpringDataRepository.save(user);
     }
 
-    public LoginResponse login(LoginRequest loginRequest) throws Exception{
-        User user = userSpringDataRepository.findByUserId(loginRequest.getUserId())
-                .orElseThrow(() -> new BadCredentialsException("없는 아이디"));
+    public LoginResponse login(UserRequestDto userRequestDto) throws Exception {
+        User user = userSpringDataRepository.findByUserId(userRequestDto.getUserId())
+                .orElseThrow(() -> new BadCredentialsException("아이디가 잘못되었습니다."));
 
-        if (!passwordEncoder.matches(loginRequest.getPasswd(), user.getPasswd())) {
-            throw new BadCredentialsException("잘못된 비밀번호");
+        if (!passwordEncoder.matches(userRequestDto.getPasswd(), user.getPasswd())) {
+            throw new BadCredentialsException("비밀번호가 잘못되었습니다.");
         }
 
         return LoginResponse.builder()
@@ -62,6 +57,12 @@ public class UserService {
                 .build();
 
     }
+
+    public User findByUserId(String userId) {
+        return userSpringDataRepository.findByUserId(userId).orElse(null);
+    }
+
+
 
 
 }

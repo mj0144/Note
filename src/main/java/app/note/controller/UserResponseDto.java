@@ -1,22 +1,23 @@
 package app.note.controller;
 
 import app.note.entity.Gender;
-import lombok.Builder;
+import app.note.entity.User;
 import lombok.Getter;
 import lombok.Setter;
-
+import org.springframework.beans.BeanUtils;
 import java.time.LocalDate;
 
 @Getter
 @Setter
-@Builder
-public class LoginRequest {
-
+public class UserResponseDto {
     private String userId;
-    private String passwd;
     private String name;
     private LocalDate brith;
     private Gender gender;
+
+    public UserResponseDto(User user) {
+        BeanUtils.copyProperties(user, this);
+    }
 
 
 }

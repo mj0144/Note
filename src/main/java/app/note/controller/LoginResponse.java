@@ -1,6 +1,7 @@
 package app.note.controller;
 
 import app.note.entity.Gender;
+import app.note.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,5 +23,6 @@ public class LoginResponse {
     private List<String> roles = new ArrayList<>();
 
     private String token;
+
 
 }
